@@ -2,7 +2,7 @@
 set -e
 
 # 1) Start Ollama on port 11434 in the background
-ollama serve --port 11434 &
+ollama serve &
 
 # 2) Give Ollama a moment to spin up
 sleep 3
