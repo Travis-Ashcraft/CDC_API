@@ -1,0 +1,8 @@
+﻿fastapi
+uvicorn[standard]
+databases[postgresql]
+asyncpg
+httpx
+aiosmtplib
+gradio_client
+python-dotenv
