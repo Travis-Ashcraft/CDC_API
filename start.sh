@@ -1,8 +1,8 @@
 ﻿#!/usr/bin/env sh
 set -e
 
-# 1) Start Ollama on 127.0.0.1:11434 (INTERNAL only) in the background
-ollama serve --host 127.0.0.1 &
+# 1) Start Ollama (defaults to listening on 0.0.0.0:11434) in the background
+ollama serve &
 
 # 2) Give Ollama a moment to spin up
 sleep 3
