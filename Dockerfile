@@ -1,35 +1,34 @@
-﻿# ─────────────────────────────────────────────────────────────
-# 1) Base image: Ollama’s official image
-# ─────────────────────────────────────────────────────────────
-FROM ollama/ollama:latest
+﻿FROM ollama/ollama:latest
 
-# 2) Install Python 3, pip, build tools, and dos2unix
+# 1) Install Python, pip, dos2unix, etc.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        bash \
-        python3 \
-        python3-pip \
-        build-essential \
-        ca-certificates \
-        git \
-        dos2unix && \
+      bash \
+      python3 \
+      python3-pip \
+      build-essential \
+      ca-certificates \
+      git \
+      dos2unix && \
     rm -rf /var/lib/apt/lists/*
 
-# 3) Set working directory
 WORKDIR /app
 
-# 4) Copy requirements.txt and install Python dependencies
+# 2) Copy & install Python deps
 COPY requirements.txt /app/
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# 5) Copy the rest of the app (including start.sh)
+# 3) Copy the app (including start.sh)
 COPY . /app/
 
-# 6) Normalize line endings and make start.sh executable
+# 4) Force LF line endings & make start.sh executable
 RUN dos2unix /app/start.sh && chmod +x /app/start.sh
 
-# 7) Expose only FastAPI’s port (4000). Do NOT expose 11434.
+# 5) Pull the llama2 model into Ollama’s cache
+RUN ollama pull llama2
+
+# 6) Expose only FastAPI’s port (4000)
 EXPOSE 4000
 
-# 8) Launch start.sh (which runs Ollama + Uvicorn)
+# 7) Entrypoint runs start.sh (which starts Ollama + Uvicorn)
 ENTRYPOINT ["./start.sh"]
