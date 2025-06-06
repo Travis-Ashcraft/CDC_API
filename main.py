@@ -37,7 +37,7 @@ async def proxy_chat(request: Request):
     try:
         async with httpx.AsyncClient() as client:
             ollama_resp = await client.post(
-                "http://localhost:11434/api/chat", json=body, timeout=60
+                "http://localhost:11434/chat", json=body, timeout=60
             )
             return JSONResponse(
                 content=ollama_resp.json(), status_code=ollama_resp.status_code
