@@ -1,18 +1,18 @@
 ﻿#!/usr/bin/env sh
 set -e
 
-# Force Ollama to bind only to loopback so Render (or Docker) doesn’t expose it publicly
+# 1) Force Ollama to bind only to loopback (127.0.0.1:11434)
 export OLLAMA_HOST="http://127.0.0.1:11434"
 
-# 1) Start the Ollama server in the background
+# 2) Start the Ollama server in the background
 ollama serve &
 
-# 2) Give Ollama a bit more time to initialize (5 seconds is safer on Render)
+# 3) Wait a few seconds for Ollama to initialize
 sleep 5
 
-# 3) Pull the quantized 7 B model ("llama2:7b-4bit").
-#    If it’s already in cache, this is a no-op.
-ollama pull llama2:7b-4bit || true
+# 4) Pull the smallest Qwen 3 model (0.6 B parameters, ≈523 MB on disk).
+#    If it’s already present in Ollama’s cache, this is a no-op.
+ollama pull qwen3:0.6b || true
 
-# 4) Launch FastAPI (Uvicorn) on the Render-assigned PORT (or 4000 locally)
+# 5) Launch Uvicorn (FastAPI) on Render’s assigned $PORT (or 4000 locally)
 exec python3 -m uvicorn main:app --host 0.0.0.0 --port "${PORT:-4000}"
